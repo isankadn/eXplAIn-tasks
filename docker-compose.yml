@@ -1,0 +1,20 @@
+version: '3'
+services:
+  worker:
+    build: .
+    command: celery -A celery_app worker --loglevel=info
+    environment:
+      - C_FORCE_ROOT=true
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+  beat:
+    build: .
+    command: celery -A celery_app beat --loglevel=info
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - redis
+  redis:
+    image: "redis:alpine"
